@@ -21,3 +21,28 @@ export const loginSchema: LoginBodySchema = {
     additionalProperties: false,
   },
 };
+
+interface SignUpData {
+  username: string;
+  password: string;
+  passwordRepeat: string;
+  email: string;
+}
+
+type SignUpBodySchema = Schema<JSONSchemaType<SignUpData>>;
+
+export const signUpSchema: SignUpBodySchema = {
+  body: {
+    type: "object",
+    properties: {
+      username: {
+        type: "string",
+      },
+      password: { type: "string" },
+      passwordRepeat: { type: "string" },
+      email: { type: "string", format: "email" },
+    },
+    required: ["username", "password", "passwordRepeat", "email"],
+    additionalProperties: false,
+  },
+};
