@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from "express";
+import express, { Router } from "express";
 import { loginHandler, signUpHandler } from "../controllers/auth.controller";
 import validate from "../middlewares/validate";
 import { loginSchema, signUpSchema } from "../schemas/auth.schema";

@@ -3,7 +3,8 @@ import log from "./logger";
 
 async function connectDB() {
   try {
-    await mongoose.connect(process.env.MONGO_URL!);
+    const { MONGO_URL } = process.env;
+    await mongoose.connect(MONGO_URL!);
     log.success("connected to db ");
   } catch (err) {
     log.error(err);

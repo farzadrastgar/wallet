@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import dateFormat, { masks } from "dateformat";
+import dateFormat from "dateformat";
 
 // Define log levels and their corresponding colors
 const logLevels = {
