@@ -5,7 +5,7 @@ import addFormats from "ajv-formats";
 type Key = "body" | "param" | "query";
 export type Schema<T> = Partial<Record<Key, T>>;
 
-const ajv = new Ajv();
+const ajv = new Ajv({ $data: true });
 addFormats(ajv);
 
 const validate = <T>(schema: Schema<JSONSchemaType<T>>) => {
@@ -19,7 +19,7 @@ const validate = <T>(schema: Schema<JSONSchemaType<T>>) => {
       }
 
       if (validationError.length === 0) {
-        next();
+        return next();
       }
       res.status(400).json({ error: validationError });
     } catch (err) {

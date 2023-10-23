@@ -25,7 +25,7 @@ export const loginSchema: LoginBodySchema = {
 interface SignUpData {
   username: string;
   password: string;
-  passwordRepeat: string;
+  confirmPassword: string;
   email: string;
 }
 
@@ -37,12 +37,19 @@ export const signUpSchema: SignUpBodySchema = {
     properties: {
       username: {
         type: "string",
+        minLength: 12,
+        maxLength: 40,
       },
-      password: { type: "string" },
-      passwordRepeat: { type: "string" },
+      password: { type: "string", minLength: 8 },
+      confirmPassword: {
+        type: "string",
+        // const: {
+        //   $data: "1/password",
+        // },
+      },
       email: { type: "string", format: "email" },
     },
-    required: ["username", "password", "passwordRepeat", "email"],
+    required: ["username", "password", "confirmPassword", "email"],
     additionalProperties: false,
   },
 };
