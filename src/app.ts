@@ -15,10 +15,10 @@ app.get("/health", (_, res: Response) => {
 });
 
 app.use("/auth", authRouter);
-app.use("/wallet", walletRouter);
-app.use("/transaction", transactionRouter);
+app.use("/wallet", authMiddleware, walletRouter);
+app.use("/transaction", authMiddleware, transactionRouter);
 
 
-app.use(authMiddleware);
+
 
 export default app;
