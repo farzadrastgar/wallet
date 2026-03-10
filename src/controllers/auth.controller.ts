@@ -3,20 +3,20 @@ import { AuthService } from "../services/auth.service";
 import { AppDataSource } from "../utils/db";
 import { WalletService } from "../services/wallet.service";
 
-const authService = new AuthService();
 
 export class AuthController {
-  static async register(req: Request, res: Response) {
+  constructor(private authService: AuthService, private walletService: WalletService) { }
+  async register(req: Request, res: Response) {
     const { username, password, email } = req.body;
 
     try {
       // Atomic transaction
       const result = await AppDataSource.manager.transaction(async (manager) => {
         // 1️⃣ Create user via AuthService (pass manager)
-        const user = await AuthService.register(username, password, email, manager);
+        const user = await this.authService.register(username, password, email, manager);
 
         // 2️⃣ Create wallet via WalletService (pass manager)
-        const wallet = await WalletService.createWallet(
+        const wallet = await this.walletService.createWallet(
           user,
           0,
           0,
@@ -39,10 +39,11 @@ export class AuthController {
     }
   }
 
-  static async login(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     try {
       const { username, password } = req.body;
-      const result = await authService.login(username, password);
+      const result = await this.authService.login(username, password);
+      console.log("Login attempt for user:", username);
       res.status(200).json(result);
     } catch (err: any) {
       res.status(400).json({ error: err.message });

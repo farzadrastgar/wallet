@@ -12,7 +12,7 @@ export class AuthService {
     private static userRepo = AppDataSource.getRepository(User);
 
     // Register a new user
-    static async register(username: string, password: string, email?: string, manager?: EntityManager,) {
+    async register(username: string, password: string, email?: string, manager?: EntityManager,) {
         const repo = manager ? manager.getRepository(User) : AuthService.userRepo;
 
         const existing = await repo.findOne({ where: { username } });

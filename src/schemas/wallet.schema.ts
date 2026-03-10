@@ -12,3 +12,24 @@ export const walletQuerySchema: JSONSchemaType<WalletQuery> = {
     required: ["userId"],
     additionalProperties: false
 };
+
+interface BuyGoldRequest {
+    amountEUR: number;
+    idempotencyKey?: string;
+}
+
+export const buyGoldSchema: JSONSchemaType<BuyGoldRequest> = {
+    type: "object",
+    properties: {
+        amountEUR: {
+            type: "number",
+            minimum: 0.01,
+        },
+        idempotencyKey: {
+            type: "string",
+            nullable: true,
+        },
+    },
+    required: ["amountEUR"],
+    additionalProperties: false,
+};
