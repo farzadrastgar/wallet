@@ -45,8 +45,8 @@ export class WalletService {
             const goldAmount = amountEUR / WalletService.GOLD_PRICE_EUR;
 
             // 3️⃣ Update wallet balances
-            wallet.fiatBalance += amountEUR;
-            wallet.goldBalance += goldAmount;
+            wallet.fiatBalance = (Number(wallet.fiatBalance) + amountEUR).toString();
+            wallet.goldBalance = (Number(wallet.goldBalance) + goldAmount).toString();
             await walletRepo.save(wallet);
 
             // 4️⃣ Log transaction via TransactionService, using same manager

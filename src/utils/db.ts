@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import log from "./logger";
 import { User } from "../models/User";
 import { Wallet } from "../models/Wallet";
+import { Transaction } from "../models/Transaction"; // Import Transaction entity
 // import other entities like Wallet, Transaction if needed
 
 const { POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB } = process.env;
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
   username: POSTGRES_USER || "user",
   password: POSTGRES_PASSWORD || "password",
   database: POSTGRES_DB || "wallet_db",
-  entities: [User, Wallet], // add all your entities here
+  entities: [User, Wallet, Transaction], // add all your entities here
   synchronize: true, // auto-create tables, good for dev/prototype
   logging: false,
 });
