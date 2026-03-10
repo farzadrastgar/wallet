@@ -1,6 +1,7 @@
 import express from "express";
 import { Express, Response } from "express";
 import helmet from "helmet";
+import walletRouter from "./routes/wallet.route";
 import authRouter from "./routes/auth.route";
 import authMiddleware from "./middlewares/authorize";
 
@@ -13,6 +14,8 @@ app.get("/health", (_, res: Response) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/wallet", walletRouter);
+
 app.use(authMiddleware);
 
 export default app;

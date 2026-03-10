@@ -24,7 +24,10 @@ export class Wallet {
     })
     fiatBalance!: string;
 
-    @OneToOne(() => User, user => user.wallet)
+    @Column()
+    userId!: string;
+
+    @OneToOne(() => User)
     @JoinColumn({ name: "userId" }) // ensures the foreign key is in this table
     user!: User;
 }

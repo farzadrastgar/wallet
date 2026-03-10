@@ -1,35 +1,24 @@
 import { Request, Response } from "express";
+import { WalletService } from "../services/wallet.service";
 
 
 export const getWalletHandler = async (req: Request, res: Response) => {
-    try {
+    const { id } = req.params;
 
-        res.status(200).json();
-    } catch (err: any) {
-
+    if (!id) {
+        return res.status(400).json({ message: "Invalid user id" });
     }
-};
-
-export const buyHandler = async (req: Request, res: Response) => {
 
     try {
+        const wallet = await WalletService.getWalletByUserId(id);
+        if (!wallet) {
+            return res.status(404).json({ message: "Wallet not found" });
+        }
 
-        return res.json();
-
+        return res.json({ userId: id, wallet });
     } catch (err) {
-
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 
-
-
-export const sellHandler = async (req: Request, res: Response) => {
-
-    try {
-
-        return res.json();
-
-    } catch (err) {
-
-    }
-};

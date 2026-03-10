@@ -1,15 +1,15 @@
 import express, { Router } from "express";
 import authMiddleware from "../middlewares/authorize";
 import validate from "../middlewares/validate";
-import { loginSchema, signUpSchema } from "../schemas/auth.schema";
-import { buyHandler, getWalletHandler, sellHandler } from "../controllers/wallet.controller";
+import { getWalletHandler } from "../controllers/wallet.controller";
+import { walletQuerySchema } from "../schemas/wallet.schema";
 
 const router: Router = express.Router();
 
-router.get("/", authMiddleware, validate(signUpSchema), getWalletHandler);
+router.get("/:id", authMiddleware, validate({ query: walletQuerySchema }), getWalletHandler);
 
-router.post("/buy", authMiddleware, validate(loginSchema), buyHandler);
-router.post("/sell", authMiddleware, validate(loginSchema), sellHandler);
+//router.post("/buy", authMiddleware, validate({ body: loginSchema }), buyHandler);
+//router.post("/sell", authMiddleware, validate({ body: loginSchema }), sellHandler);
 
 
 export default router;
