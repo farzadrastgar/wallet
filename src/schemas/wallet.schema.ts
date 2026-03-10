@@ -34,10 +34,15 @@ export const buyGoldSchema: JSONSchemaType<BuyGoldRequest> = {
     additionalProperties: false,
 };
 
-export const sellGoldSchema: JSONSchemaType<BuyGoldRequest> = {
+interface SellGoldRequest {
+    amountGold: number;
+    idempotencyKey?: string;
+}
+
+export const sellGoldSchema: JSONSchemaType<SellGoldRequest> = {
     type: "object",
     properties: {
-        amountEUR: {
+        amountGold: {
             type: "number",
             minimum: 0.01,
         },
@@ -46,6 +51,6 @@ export const sellGoldSchema: JSONSchemaType<BuyGoldRequest> = {
             nullable: true,
         },
     },
-    required: ["amountEUR"],
+    required: ["amountGold"],
     additionalProperties: false,
 };

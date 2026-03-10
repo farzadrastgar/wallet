@@ -7,10 +7,9 @@ import { AuthService } from "../services/auth.service";
 import { TransactionService } from "../services/transaction.service";
 import { AppDataSource } from "../utils/db";
 
-const transactionService = new TransactionService(AppDataSource);
-const authService = new AuthService();
-const walletService = new WalletService(AppDataSource, transactionService);
-const authController = new AuthController(authService, walletService);
+const walletService = new WalletService(AppDataSource, new TransactionService(AppDataSource));
+const authService = new AuthService(AppDataSource, walletService);
+const authController = new AuthController(authService);
 const router = Router();
 
 // Register a new user

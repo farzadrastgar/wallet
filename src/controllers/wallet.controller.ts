@@ -71,15 +71,15 @@ export class WalletController {
             }
 
             const userId = req.user.userId;
-            const { amountEUR, idempotencyKey } = req.body;
+            const { amountGold, idempotencyKey } = req.body;
 
             // 2️⃣ Validate amount
-            if (!amountEUR || amountEUR <= 0) {
-                return res.status(400).json({ success: false, message: "Invalid amountEUR" });
+            if (!amountGold || amountGold <= 0) {
+                return res.status(400).json({ success: false, message: "Invalid amountGold" });
             }
 
             // 3️⃣ Call WalletService to handle selling gold
-            const transaction = await this.walletService.sellGold(userId, amountEUR, idempotencyKey);
+            const transaction = await this.walletService.sellGold(userId, amountGold, idempotencyKey);
 
             // 4️⃣ Return success response
             return res.status(200).json({

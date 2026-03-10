@@ -1,29 +1,14 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
-import { AppDataSource } from "../utils/db";
-import { WalletService } from "../services/wallet.service";
-
 
 export class AuthController {
-  constructor(private authService: AuthService, private walletService: WalletService) { }
+  constructor(private authService: AuthService) { }
   async register(req: Request, res: Response) {
     const { username, password, email } = req.body;
 
     try {
-      // Atomic transaction
-      const result = await AppDataSource.manager.transaction(async (manager) => {
-        // 1️⃣ Create user via AuthService (pass manager)
-        const user = await this.authService.register(username, password, email, manager);
+      const result = await this.authService.registerWithWallet(username, password, email);
 
-        // 2️⃣ Create wallet via WalletService (pass manager)
-        const wallet = await this.walletService.createWallet(
-          user,
-          0,
-          0,
-          manager
-        );
-        return { user, wallet };
-      });
 
       res.status(201).json({
         message: "User and wallet created",

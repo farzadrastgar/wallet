@@ -4,8 +4,8 @@ import { EntityManager, DataSource } from "typeorm";
 import { TransactionService } from "./transaction.service";
 
 export class WalletService {
-    static GOLD_PRICE_EUR = 65; // Mock gold price
 
+    static GOLD_PRICE_EUR = Number(process.env["GOLD_PRICE_EUR"] || 65); // Default to 65 EUR/g if not set
     constructor(
         private dataSource: DataSource,
         private transactionService: TransactionService
@@ -45,7 +45,7 @@ export class WalletService {
             const goldAmount = amountEUR / WalletService.GOLD_PRICE_EUR;
 
             // 3️⃣ Update wallet balances
-            wallet.fiatBalance = (Number(wallet.fiatBalance) + amountEUR).toString();
+            wallet.fiatBalance = (Number(wallet.fiatBalance) - amountEUR).toString();
             wallet.goldBalance = (Number(wallet.goldBalance) + goldAmount).toString();
             await walletRepo.save(wallet);
 
@@ -69,8 +69,8 @@ export class WalletService {
         });
     }
 
-    async sellGold(userId: string, amountEUR: number, idempotencyKey?: string) {
-        if (amountEUR <= 0) throw new Error("Amount must be positive");
+    async sellGold(userId: string, amountGold: number, idempotencyKey?: string) {
+        if (amountGold <= 0) throw new Error("Amount must be positive");
 
         return this.dataSource.transaction(async (manager: EntityManager) => {
             const walletRepo = manager.getRepository(Wallet);
@@ -84,16 +84,16 @@ export class WalletService {
             if (!wallet) throw new Error("Wallet not found");
 
             // 2️⃣ Calculate gold to deduct
-            const goldAmount = amountEUR / WalletService.GOLD_PRICE_EUR;
+            const amountEUR = amountGold * WalletService.GOLD_PRICE_EUR;
 
             // 3️⃣ Check if wallet has enough gold
-            if (Number(wallet.goldBalance) < goldAmount) {
+            if (Number(wallet.goldBalance) < amountGold) {
                 throw new Error("Insufficient gold balance");
             }
 
             // 4️⃣ Update wallet balances
-            wallet.goldBalance = (Number(wallet.goldBalance) - goldAmount).toFixed(8); // keep 8 decimals
-            wallet.fiatBalance = (Number(wallet.fiatBalance) - amountEUR).toFixed(2); // keep 2 decimals
+            wallet.goldBalance = (Number(wallet.goldBalance) - amountGold).toFixed(8); // keep 8 decimals
+            wallet.fiatBalance = (Number(wallet.fiatBalance) + amountEUR).toFixed(2); // keep 2 decimals
             await walletRepo.save(wallet);
 
             // 5️⃣ Log transaction via TransactionService, using same manager
@@ -103,7 +103,7 @@ export class WalletService {
                 wallet.id,
                 "SELL",
                 amountEUR,
-                goldAmount,
+                amountGold,
                 WalletService.GOLD_PRICE_EUR,
                 idempotencyKey,
                 manager // ensures this is part of the same DB transaction
