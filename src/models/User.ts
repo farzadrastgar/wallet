@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToOne } from "typeorm";
+import { Wallet } from "./Wallet";
 
 @Entity("users")
 @Unique(["username"])
@@ -17,6 +18,9 @@ export class User {
 
   @Column({ type: "boolean", default: false })
   isVerified!: boolean;
+
+  @OneToOne(() => Wallet, wallet => wallet.user)
+  wallet!: Wallet;
 
   @CreateDateColumn()
   createdAt!: Date;
