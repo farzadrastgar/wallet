@@ -62,6 +62,38 @@ export class WalletController {
             });
         }
     }
+
+    async sellHandler(req: Request, res: Response) {
+        try {
+            // 1️⃣ Check if user is authenticated
+            if (!req.user || !req.user.userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
+
+            const userId = req.user.userId;
+            const { amountEUR, idempotencyKey } = req.body;
+
+            // 2️⃣ Validate amount
+            if (!amountEUR || amountEUR <= 0) {
+                return res.status(400).json({ success: false, message: "Invalid amountEUR" });
+            }
+
+            // 3️⃣ Call WalletService to handle selling gold
+            const transaction = await this.walletService.sellGold(userId, amountEUR, idempotencyKey);
+
+            // 4️⃣ Return success response
+            return res.status(200).json({
+                success: true,
+                transaction,
+            });
+        } catch (err: any) {
+            console.error("Sell gold error:", err);
+            return res.status(400).json({
+                success: false,
+                message: err.message || "Failed to sell gold",
+            });
+        }
+    }
 }
 
 

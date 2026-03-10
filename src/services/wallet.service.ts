@@ -68,4 +68,51 @@ export class WalletService {
             };
         });
     }
+
+    async sellGold(userId: string, amountEUR: number, idempotencyKey?: string) {
+        if (amountEUR <= 0) throw new Error("Amount must be positive");
+
+        return this.dataSource.transaction(async (manager: EntityManager) => {
+            const walletRepo = manager.getRepository(Wallet);
+
+            // 1️⃣ Fetch wallet with row-level lock to prevent concurrent updates
+            const wallet = await walletRepo.findOne({
+                where: { userId },
+                lock: { mode: "pessimistic_write" },
+            });
+
+            if (!wallet) throw new Error("Wallet not found");
+
+            // 2️⃣ Calculate gold to deduct
+            const goldAmount = amountEUR / WalletService.GOLD_PRICE_EUR;
+
+            // 3️⃣ Check if wallet has enough gold
+            if (Number(wallet.goldBalance) < goldAmount) {
+                throw new Error("Insufficient gold balance");
+            }
+
+            // 4️⃣ Update wallet balances
+            wallet.goldBalance = (Number(wallet.goldBalance) - goldAmount).toFixed(8); // keep 8 decimals
+            wallet.fiatBalance = (Number(wallet.fiatBalance) - amountEUR).toFixed(2); // keep 2 decimals
+            await walletRepo.save(wallet);
+
+            // 5️⃣ Log transaction via TransactionService, using same manager
+            const transaction = await this.transactionService.createTransaction(
+                this.dataSource,
+                userId,
+                wallet.id,
+                "SELL",
+                amountEUR,
+                goldAmount,
+                WalletService.GOLD_PRICE_EUR,
+                idempotencyKey,
+                manager // ensures this is part of the same DB transaction
+            );
+
+            return {
+                wallet,
+                transaction,
+            };
+        });
+    }
 }
