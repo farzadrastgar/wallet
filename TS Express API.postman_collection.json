@@ -1,0 +1,199 @@
+{
+  "info": {
+    "_postman_id": "a3fabdf9-c27f-4a42-8d31-e7e87fd96d35",
+    "name": "TS Express API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7585790"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"farzadrastgar123\",\n    \"password\": \"@#%DJGDSK\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/auth/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"farzadrastgar123\",\n    \"password\": \"@#%DJGDSK\",\n    \"confirmPassword\": \"@#%DJGDSK\",\n    \"email\": \"farzad@gmail.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/auth/register",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Wallet",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMWY0YjA2YS04M2FjLTQ3MTUtYTU5MS1lNGRhYzViZjliMGMiLCJpYXQiOjE3NzMxNzA2MTEsImV4cCI6MTc3MzE3NDIxMX0.eW78Fi5OVfQhWlU1EDzHPy4SDRpSFx61AJmTKWjmIsA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/wallet/01f4b06a-83ac-4715-a591-e4dac5bf9b0c",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "wallet",
+            "01f4b06a-83ac-4715-a591-e4dac5bf9b0c"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Transactions",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMWY0YjA2YS04M2FjLTQ3MTUtYTU5MS1lNGRhYzViZjliMGMiLCJpYXQiOjE3NzMxNjE5NjUsImV4cCI6MTc3MzE2NTU2NX0.VfiD84HpOyhlUC_E4s0ZBaMBUk8eHAcqIKwvjeVopmc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/transaction",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "transaction"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNjYxZTZkYS0yNzNkLTQ0NTQtOTRiNS1mOWFkZTViODQyNDIiLCJpYXQiOjE3NzMxNzEyODksImV4cCI6MTc3MzE3NDg4OX0.J0dcbWDb0g8cs5J7TV3tIyQ9iU6_GUa6L5PX-jX0Dz0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amountEUR\": 1000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/wallet/buy",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "wallet",
+            "buy"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sell",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMWY0YjA2YS04M2FjLTQ3MTUtYTU5MS1lNGRhYzViZjliMGMiLCJpYXQiOjE3NzMxNjE5NjUsImV4cCI6MTc3MzE2NTU2NX0.VfiD84HpOyhlUC_E4s0ZBaMBUk8eHAcqIKwvjeVopmc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amountGold\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/wallet/sell",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "wallet",
+            "sell"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
