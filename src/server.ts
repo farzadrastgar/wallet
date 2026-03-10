@@ -4,9 +4,11 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 import app from "./app";
 import log from "./utils/logger";
+import { connectRedis } from "./utils/redis";
 const { PORT } = process.env;
 
 app.listen(PORT, () => {
   log.success(`App listening on port ${PORT}`);
   connectDB();
+  connectRedis();
 });

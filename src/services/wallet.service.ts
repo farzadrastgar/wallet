@@ -2,7 +2,7 @@ import { Wallet } from "../models/Wallet";
 import { User } from "../models/User";
 import { EntityManager, DataSource } from "typeorm";
 import { TransactionService } from "./transaction.service";
-
+import { redisClient } from "../utils/redis";
 export class WalletService {
 
     static GOLD_PRICE_EUR = Number(process.env["GOLD_PRICE_EUR"] || 65); // Default to 65 EUR/g if not set
@@ -20,17 +20,39 @@ export class WalletService {
     }
 
     async getWalletByUserId(userId: string): Promise<Wallet | null> {
+        const cacheKey = `wallet:${userId}`;
+
+        // 1️⃣ Try Redis first
+        const cached = await redisClient.get(cacheKey);
+
+        if (cached) {
+            return JSON.parse(cached);
+        }
+
+        // 2️⃣ If not in cache → query DB
         const walletRepo = this.dataSource.getRepository(Wallet);
-        return walletRepo.findOne({
+
+        const wallet = await walletRepo.findOne({
             where: { userId }
         });
+
+        // 3️⃣ Store in Redis
+        if (wallet) {
+            await redisClient.set(
+                cacheKey,
+                JSON.stringify(wallet),
+                { EX: 60 } // expire in 60 seconds
+            );
+        }
+
+        return wallet;
     }
 
 
     async buyGold(userId: string, amountEUR: number, idempotencyKey?: string) {
         if (amountEUR <= 0) throw new Error("Amount must be positive");
 
-        return this.dataSource.transaction(async (manager: EntityManager) => {
+        const result = this.dataSource.transaction(async (manager: EntityManager) => {
             const walletRepo = manager.getRepository(Wallet);
 
             // 1️⃣ Fetch wallet with row-level lock to prevent concurrent updates
@@ -43,6 +65,12 @@ export class WalletService {
 
             // 2️⃣ Calculate gold to credit
             const goldAmount = amountEUR / WalletService.GOLD_PRICE_EUR;
+
+            // 3️⃣ Check if wallet has enough gold
+            if (Number(wallet.fiatBalance) < amountEUR) {
+                throw new Error("Insufficient fiat balance");
+            }
+
 
             // 3️⃣ Update wallet balances
             wallet.fiatBalance = (Number(wallet.fiatBalance) - amountEUR).toString();
@@ -67,12 +95,17 @@ export class WalletService {
                 transaction,
             };
         });
+
+        // ✅ Transaction committed successfully → invalidate cache
+        await redisClient.del(`wallet:${userId}`);
+
+        return result;
     }
 
     async sellGold(userId: string, amountGold: number, idempotencyKey?: string) {
         if (amountGold <= 0) throw new Error("Amount must be positive");
 
-        return this.dataSource.transaction(async (manager: EntityManager) => {
+        const result = this.dataSource.transaction(async (manager: EntityManager) => {
             const walletRepo = manager.getRepository(Wallet);
 
             // 1️⃣ Fetch wallet with row-level lock to prevent concurrent updates
@@ -114,5 +147,10 @@ export class WalletService {
                 transaction,
             };
         });
+
+        // ✅ Transaction committed successfully → invalidate cache
+        await redisClient.del(`wallet:${userId}`);
+
+        return result;
     }
 }

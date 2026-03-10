@@ -28,7 +28,6 @@ export class AuthController {
     try {
       const { username, password } = req.body;
       const result = await this.authService.login(username, password);
-      console.log("Login attempt for user:", username);
       res.status(200).json(result);
     } catch (err: any) {
       res.status(400).json({ error: err.message });
