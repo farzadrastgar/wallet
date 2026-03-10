@@ -4,9 +4,9 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 import app from "./app";
 import log from "./utils/logger";
-const { port } = process.env;
+const { PORT } = process.env;
 
-app.listen(port, () => {
-  log.success(`App listening on port ${port}`);
+app.listen(PORT, () => {
+  log.success(`App listening on port ${PORT}`);
   connectDB();
 });

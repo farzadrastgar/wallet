@@ -1,26 +1,25 @@
 import { JSONSchemaType } from "ajv";
-import { Schema } from "../middlewares/validate";
 
+// --------------------
+// Login Schema
+// --------------------
 interface LoginData {
   username: string;
   password: string;
 }
 
-type LoginBodySchema = Schema<JSONSchemaType<LoginData>>;
-
-export const loginSchema: LoginBodySchema = {
-  body: {
-    type: "object",
-    properties: {
-      username: {
-        type: "string",
-      },
-      password: { type: "string" },
-    },
-    required: ["username", "password"],
-    additionalProperties: false,
+export const loginSchema: JSONSchemaType<LoginData> = {
+  type: "object",
+  properties: {
+    username: { type: "string" },
+    password: { type: "string" },
   },
+  required: ["username", "password"], // include all required properties
+  additionalProperties: false,
 };
+// --------------------
+// Signup Schema
+// --------------------
 
 interface SignUpData {
   username: string;
@@ -29,27 +28,16 @@ interface SignUpData {
   email: string;
 }
 
-type SignUpBodySchema = Schema<JSONSchemaType<SignUpData>>;
+export const signUpSchema: JSONSchemaType<SignUpData> = {
 
-export const signUpSchema: SignUpBodySchema = {
-  body: {
-    type: "object",
-    properties: {
-      username: {
-        type: "string",
-        minLength: 12,
-        maxLength: 40,
-      },
-      password: { type: "string", minLength: 8 },
-      confirmPassword: {
-        type: "string",
-        // const: {
-        //   $data: "1/password",
-        // },
-      },
-      email: { type: "string", format: "email" },
-    },
-    required: ["username", "password", "confirmPassword", "email"],
-    additionalProperties: false,
+  type: "object",
+  properties: {
+    username: { type: "string" },
+    password: { type: "string" },
+    confirmPassword: { type: "string" },
+    email: { type: "string" },
   },
+  required: ["username", "password", "confirmPassword", "email"],
+  additionalProperties: false,
+
 };

@@ -1,12 +1,15 @@
-import express, { Router } from "express";
-import { loginHandler, signUpHandler } from "../controllers/auth.controller";
-import validate from "../middlewares/validate";
+import { Router } from "express";
+import { AuthController } from "../controllers/auth.controller";
 import { loginSchema, signUpSchema } from "../schemas/auth.schema";
+import validate from "../middlewares/validate";
 
-const router: Router = express.Router();
 
-router.post("/signup", validate(signUpSchema), signUpHandler);
+const router = Router();
 
-router.post("/login", validate(loginSchema), loginHandler);
+// Register a new user
+router.post("/register", validate({ body: signUpSchema }), AuthController.register);
+
+// Login an existing user
+router.post("/login", validate({ body: loginSchema }), AuthController.login);
 
 export default router;
