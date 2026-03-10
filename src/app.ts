@@ -4,6 +4,7 @@ import helmet from "helmet";
 import walletRouter from "./routes/wallet.route";
 import authRouter from "./routes/auth.route";
 import authMiddleware from "./middlewares/authorize";
+import transactionRouter from "./routes/transaction.route";
 
 const app: Express = express();
 app.use(helmet());
@@ -15,6 +16,8 @@ app.get("/health", (_, res: Response) => {
 
 app.use("/auth", authRouter);
 app.use("/wallet", walletRouter);
+app.use("/transaction", transactionRouter);
+
 
 app.use(authMiddleware);
 

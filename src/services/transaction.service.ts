@@ -48,7 +48,7 @@ export class TransactionService {
     /**
      * Retrieve all transactions for a user
      */
-    async getUserTransactions(userId: string): Promise<Transaction[]> {
+    async getTransactionsByUserId(userId: string): Promise<Transaction[]> {
         const repo = this.dataSource.getRepository(Transaction);
         return repo.find({
             where: { userId },
