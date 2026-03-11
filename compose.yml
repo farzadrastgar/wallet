@@ -1,4 +1,18 @@
 services:
+  api:
+    build: .
+    container_name: express_api
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - mynetwork
+
   postgres:
     image: postgres:16
     container_name: postgres_container
@@ -11,6 +25,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
   redis:
     image: redis:7

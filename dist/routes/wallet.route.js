@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const authorize_1 = __importDefault(require("../middlewares/authorize"));
+const validate_1 = __importDefault(require("../middlewares/validate"));
+const wallet_controller_1 = require("../controllers/wallet.controller");
+const wallet_schema_1 = require("../schemas/wallet.schema");
+const wallet_service_1 = require("../services/wallet.service");
+const transaction_service_1 = require("../services/transaction.service");
+const db_1 = require("../utils/db");
+const transactionService = new transaction_service_1.TransactionService(db_1.AppDataSource);
+const walletService = new wallet_service_1.WalletService(db_1.AppDataSource, transactionService);
+const walletController = new wallet_controller_1.WalletController(walletService);
+const router = express_1.default.Router();
+router.get("/:id", authorize_1.default, (0, validate_1.default)({ query: wallet_schema_1.walletQuerySchema }), walletController.getWalletHandler.bind(walletController));
+router.post("/buy", authorize_1.default, (0, validate_1.default)({ body: wallet_schema_1.buyGoldSchema }), walletController.buyHandler.bind(walletController));
+router.post("/sell", authorize_1.default, (0, validate_1.default)({ body: wallet_schema_1.sellGoldSchema }), walletController.sellHandler.bind(walletController));
+exports.default = router;
